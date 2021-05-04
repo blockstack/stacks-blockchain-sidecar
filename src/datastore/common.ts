@@ -491,6 +491,12 @@ export interface DbRawEventRequest {
   event_path: string;
   payload: string;
 }
+export interface DbAssetMetadata {
+  name: string;
+  description: string;
+  image_uri: string;
+  image_canonical_uri: string;
+}
 
 export interface DataStore extends DataStoreEventEmitter {
   storeRawEventRequest(eventPath: string, payload: string): Promise<void>;
@@ -753,6 +759,9 @@ export interface DataStore extends DataStoreEventEmitter {
     blockHeight: number
   ): Promise<FoundOrNot<AddressTokenOfferingLocked>>;
   close(): Promise<void>;
+
+  getftMetadata(contractId: string): Promise<FoundOrNot<DbAssetMetadata>>;
+  getNftMetadata(contractId: string): Promise<FoundOrNot<DbAssetMetadata>>;
 }
 
 export function getAssetEventId(event_index: number, event_tx_id: string): string {

@@ -69,6 +69,7 @@ import {
   DbMicroblockPartial,
   DataStoreTxEventData,
   DbRawEventRequest,
+  DbAssetMetadata,
 } from './common';
 import {
   AddressTokenOfferingLocked,
@@ -5439,6 +5440,43 @@ export class PgDataStore
         return { found: false } as const;
       }
     });
+  }
+
+  async getftMetadata(contractId: string): Promise<FoundOrNot<DbAssetMetadata>> {
+    /**
+     * extract nft information from db here..
+     */
+
+    //sample metadata
+    const metadata: DbAssetMetadata = {
+      name: 'sample asset name',
+      description: 'sample asset description',
+      image_uri: 'image uri',
+      image_canonical_uri: 'canonical image uri',
+    };
+
+    return {
+      found: true,
+      result: metadata,
+    };
+  }
+  async getNftMetadata(contractId: string): Promise<FoundOrNot<DbAssetMetadata>> {
+    /**
+     * extract nft information from db here..
+     */
+
+    //sample metadata
+    const metadata: DbAssetMetadata = {
+      name: 'sample asset name',
+      description: 'sample asset description',
+      image_uri: 'image uri',
+      image_canonical_uri: 'canonical image uri',
+    };
+
+    return {
+      found: true,
+      result: metadata,
+    };
   }
 
   async close(): Promise<void> {
