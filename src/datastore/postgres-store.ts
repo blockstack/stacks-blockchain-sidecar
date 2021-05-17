@@ -5442,7 +5442,7 @@ export class PgDataStore
     });
   }
 
-  getftMetadata(contractId: string): Promise<FoundOrNot<DbAssetMetadata>> {
+  getFtMetadata(contractId: string): Promise<FoundOrNot<DbAssetMetadata>> {
     /**
      * extract nft information from db here..
      */

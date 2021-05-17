@@ -760,7 +760,7 @@ export interface DataStore extends DataStoreEventEmitter {
   ): Promise<FoundOrNot<AddressTokenOfferingLocked>>;
   close(): Promise<void>;
 
-  getftMetadata(contractId: string): Promise<FoundOrNot<DbAssetMetadata>>;
+  getFtMetadata(contractId: string): Promise<FoundOrNot<DbAssetMetadata>>;
   getNftMetadata(contractId: string): Promise<FoundOrNot<DbAssetMetadata>>;
 }
 

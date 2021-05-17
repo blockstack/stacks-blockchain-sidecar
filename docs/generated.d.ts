@@ -77,8 +77,8 @@ export type SchemaMergeRootStub =
   | RosettaNetworkOptionsResponse
   | RosettaStatusRequest
   | RosettaNetworkStatusResponse
-  | FTMetadataResponse
-  | NFTMetadataResponse
+  | FungibleTokenMetadataResponse
+  | NonFungibleTokenMetadataResponse
   | MempoolTransactionListResponse
   | GetRawTransactionResult
   | TransactionResults
@@ -2668,7 +2668,7 @@ export interface RosettaPeers {
   };
   [k: string]: unknown | undefined;
 }
-export interface FTMetadataResponse {
+export interface FungibleTokenMetadataResponse {
   /**
    * Identifies the asset to which this token represents
    */
@@ -2687,7 +2687,7 @@ export interface FTMetadataResponse {
   image_canonical_uri: string;
   [k: string]: unknown | undefined;
 }
-export interface NFTMetadataResponse {
+export interface NonFungibleTokenMetadataResponse {
   /**
    * Identifies the asset to which this token represents
    */
