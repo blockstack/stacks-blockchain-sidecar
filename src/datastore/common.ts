@@ -491,12 +491,22 @@ export interface DbRawEventRequest {
   event_path: string;
   payload: string;
 }
-export interface DbAssetMetadata {
+export interface DbNonFungibleTokenMetadata {
   name: string;
   description: string;
   image_uri: string;
   image_canonical_uri: string;
   contract_id: string;
+}
+
+export interface DbFungibleTokenMetadata {
+  name: string;
+  description: string;
+  image_uri: string;
+  image_canonical_uri: string;
+  contract_id: string;
+  symbol: string;
+  decimals: number;
 }
 
 export interface DataStore extends DataStoreEventEmitter {
@@ -761,11 +771,11 @@ export interface DataStore extends DataStoreEventEmitter {
   ): Promise<FoundOrNot<AddressTokenOfferingLocked>>;
   close(): Promise<void>;
 
-  getFtMetadata(contractId: string): Promise<FoundOrNot<DbAssetMetadata>>;
-  getNftMetadata(contractId: string): Promise<FoundOrNot<DbAssetMetadata>>;
+  getFtMetadata(contractId: string): Promise<FoundOrNot<DbFungibleTokenMetadata>>;
+  getNftMetadata(contractId: string): Promise<FoundOrNot<DbNonFungibleTokenMetadata>>;
 
-  updateNFtMetadata(nftMetadata: DbAssetMetadata): Promise<number>;
-  updateFtMetadata(ftMetadata: DbAssetMetadata): Promise<number>;
+  updateNFtMetadata(nftMetadata: DbNonFungibleTokenMetadata): Promise<number>;
+  updateFtMetadata(ftMetadata: DbFungibleTokenMetadata): Promise<number>;
 }
 
 export function getAssetEventId(event_index: number, event_tx_id: string): string {
