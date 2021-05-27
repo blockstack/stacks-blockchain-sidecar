@@ -496,6 +496,7 @@ export interface DbAssetMetadata {
   description: string;
   image_uri: string;
   image_canonical_uri: string;
+  contract_id: string;
 }
 
 export interface DataStore extends DataStoreEventEmitter {
@@ -762,6 +763,9 @@ export interface DataStore extends DataStoreEventEmitter {
 
   getFtMetadata(contractId: string): Promise<FoundOrNot<DbAssetMetadata>>;
   getNftMetadata(contractId: string): Promise<FoundOrNot<DbAssetMetadata>>;
+
+  updateNFtMetadata(nftMetadata: DbAssetMetadata): Promise<number>;
+  updateFtMetadata(ftMetadata: DbAssetMetadata): Promise<number>;
 }
 
 export function getAssetEventId(event_index: number, event_tx_id: string): string {
