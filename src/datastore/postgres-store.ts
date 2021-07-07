@@ -5522,6 +5522,8 @@ export class PgDataStore
           `,
         [name, description, image_uri, image_canonical_uri, contract_id, symbol, decimals]
       );
+
+      this.emit('tokensUpdate', contract_id);
       return result.rowCount;
     });
   }
@@ -5537,6 +5539,7 @@ export class PgDataStore
           `,
         [name, description, image_uri, image_canonical_uri, contract_id]
       );
+      this.emit('tokensUpdate', contract_id);
       return result.rowCount;
     });
   }
