@@ -3918,6 +3918,7 @@ describe('postgres datastore', () => {
 
   test('pg token nft-metadata', async () => {
     const nftMetadata: DbNonFungibleTokenMetadata = {
+      token_uri: 'nft-tokenuri',
       name: 'nft-metadata',
       description: 'nft -metadata description',
       image_uri: 'nft-metadata image uri example',
@@ -3935,6 +3936,7 @@ describe('postgres datastore', () => {
 
   test('pg token ft-metadata', async () => {
     const ftMetadata: DbFungibleTokenMetadata = {
+      token_uri: 'ft-token',
       name: 'ft-metadata',
       description: 'ft -metadata description',
       symbol: 'stx',
