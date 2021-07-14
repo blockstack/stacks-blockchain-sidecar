@@ -779,6 +779,16 @@ export interface DataStore extends DataStoreEventEmitter {
 
   updateNFtMetadata(nftMetadata: DbNonFungibleTokenMetadata): Promise<number>;
   updateFtMetadata(ftMetadata: DbFungibleTokenMetadata): Promise<number>;
+
+  getFtMetadataList(args: {
+    limit: number;
+    offset: number;
+  }): Promise<{ results: DbFungibleTokenMetadata[]; total: number }>;
+
+  getNftMetadataList(args: {
+    limit: number;
+    offset: number;
+  }): Promise<{ results: DbNonFungibleTokenMetadata[]; total: number }>;
 }
 
 export function getAssetEventId(event_index: number, event_tx_id: string): string {
