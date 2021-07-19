@@ -39,6 +39,7 @@ import * as pathToRegex from 'path-to-regexp';
 import * as expressListEndpoints from 'express-list-endpoints';
 import { createMiddleware as createPrometheusMiddleware } from '@promster/express';
 import { createMicroblockRouter } from './routes/microblock';
+import { createTokenRouter } from './routes/tokens/tokens';
 
 export interface ApiServer {
   expressApp: ExpressWithAsync;
@@ -148,6 +149,7 @@ export async function startApiServer({
       router.use('/debug', createDebugRouter(datastore));
       router.use('/status', (req, res) => res.status(200).json({ status: 'ready' }));
       router.use('/faucets', createFaucetRouter(datastore));
+      router.use('/tokens', createTokenRouter(datastore));
       return router;
     })()
   );

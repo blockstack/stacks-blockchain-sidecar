@@ -69,6 +69,8 @@ import {
   DbMicroblockPartial,
   DataStoreTxEventData,
   DbRawEventRequest,
+  DbNonFungibleTokenMetadata,
+  DbFungibleTokenMetadata,
 } from './common';
 import {
   AddressTokenOfferingLocked,
@@ -5438,6 +5440,202 @@ export class PgDataStore
       } else {
         return { found: false } as const;
       }
+    });
+  }
+
+  async getFtMetadata(contractId: string): Promise<FoundOrNot<DbFungibleTokenMetadata>> {
+    return this.query(async client => {
+      const queryResult = await client.query<DbFungibleTokenMetadata>(
+        `
+         SELECT token_uri, name, description, image_uri, image_canonical_uri, symbol, decimals, contract_id
+         FROM ft_metadata
+         WHERE contract_id = $1
+         LIMIT 1
+       `,
+        [contractId]
+      );
+      if (queryResult.rowCount > 0) {
+        const metadata: DbFungibleTokenMetadata = {
+          token_uri: queryResult.rows[0].token_uri,
+          name: queryResult.rows[0].name,
+          description: queryResult.rows[0].description,
+          image_uri: queryResult.rows[0].image_uri,
+          image_canonical_uri: queryResult.rows[0].image_canonical_uri,
+          symbol: queryResult.rows[0].symbol,
+          decimals: queryResult.rows[0].decimals,
+          contract_id: queryResult.rows[0].contract_id,
+        };
+        return {
+          found: true,
+          result: metadata,
+        };
+      } else {
+        return { found: false } as const;
+      }
+    });
+  }
+
+  async getNftMetadata(contractId: string): Promise<FoundOrNot<DbNonFungibleTokenMetadata>> {
+    return this.query(async client => {
+      const queryResult = await client.query<DbNonFungibleTokenMetadata>(
+        `
+         SELECT token_uri, name, description, image_uri, image_canonical_uri, contract_id
+         FROM nft_metadata
+         WHERE contract_id = $1
+         LIMIT 1
+       `,
+        [contractId]
+      );
+      if (queryResult.rowCount > 0) {
+        const metadata: DbNonFungibleTokenMetadata = {
+          token_uri: queryResult.rows[0].token_uri,
+          name: queryResult.rows[0].name,
+          description: queryResult.rows[0].description,
+          image_uri: queryResult.rows[0].image_uri,
+          image_canonical_uri: queryResult.rows[0].image_canonical_uri,
+          contract_id: queryResult.rows[0].contract_id,
+        };
+        return {
+          found: true,
+          result: metadata,
+        };
+      } else {
+        return { found: false } as const;
+      }
+    });
+  }
+
+  async updateFtMetadata(ftMetadata: DbFungibleTokenMetadata): Promise<number> {
+    const {
+      token_uri,
+      name,
+      description,
+      image_uri,
+      image_canonical_uri,
+      contract_id,
+      symbol,
+      decimals,
+    } = ftMetadata;
+    return await this.queryTx(async client => {
+      const result = await client.query(
+        `
+        INSERT INTO ft_metadata(
+          token_uri, name, description, image_uri, image_canonical_uri, contract_id, symbol, decimals
+          ) values($1, $2, $3, $4, $5, $6, $7, $8)
+          `,
+        [
+          token_uri,
+          name,
+          description,
+          image_uri,
+          image_canonical_uri,
+          contract_id,
+          symbol,
+          decimals,
+        ]
+      );
+
+      this.emit('tokensUpdate', contract_id);
+      return result.rowCount;
+    });
+  }
+
+  async updateNFtMetadata(nftMetadata: DbNonFungibleTokenMetadata): Promise<number> {
+    const {
+      token_uri,
+      name,
+      description,
+      image_uri,
+      image_canonical_uri,
+      contract_id,
+    } = nftMetadata;
+    return await this.queryTx(async client => {
+      const result = await client.query(
+        `
+        INSERT INTO nft_metadata(
+          token_uri, name, description, image_uri, image_canonical_uri, contract_id
+          ) values($1, $2, $3, $4, $5, $6)
+          `,
+        [token_uri, name, description, image_uri, image_canonical_uri, contract_id]
+      );
+      this.emit('tokensUpdate', contract_id);
+      return result.rowCount;
+    });
+  }
+
+  getFtMetadataList({
+    limit,
+    offset,
+  }: {
+    limit: number;
+    offset: number;
+  }): Promise<{ results: DbFungibleTokenMetadata[]; total: number }> {
+    let totalQuery: QueryResult<{ count: number }>;
+    let resultQuery: QueryResult<DbFungibleTokenMetadata>;
+    return this.queryTx(async client => {
+      totalQuery = await client.query<{ count: number }>(
+        `
+          SELECT COUNT(*)::integer
+          FROM ft_metadata
+          `
+      );
+      resultQuery = await client.query<DbFungibleTokenMetadata>(
+        `
+          SELECT *
+          FROM ft_metadata
+          LIMIT $1
+          OFFSET $2
+          `,
+        [limit, offset]
+      );
+      const parsed = resultQuery.rows.map(r => ({
+        name: r.name,
+        description: r.description,
+        token_uri: r.token_uri,
+        image_uri: r.image_uri,
+        image_canonical_uri: r.image_canonical_uri,
+        decimals: r.decimals,
+        symbol: r.symbol,
+        contract_id: r.contract_id,
+      }));
+      return { results: parsed, total: totalQuery.rows[0].count };
+    });
+  }
+
+  getNftMetadataList({
+    limit,
+    offset,
+  }: {
+    limit: number;
+    offset: number;
+  }): Promise<{ results: DbNonFungibleTokenMetadata[]; total: number }> {
+    let totalQuery: QueryResult<{ count: number }>;
+    let resultQuery: QueryResult<DbNonFungibleTokenMetadata>;
+    return this.queryTx(async client => {
+      totalQuery = await client.query<{ count: number }>(
+        `
+          SELECT COUNT(*)::integer
+          FROM nft_metadata
+          `
+      );
+      resultQuery = await client.query<DbFungibleTokenMetadata>(
+        `
+          SELECT *
+          FROM nft_metadata
+          LIMIT $1
+          OFFSET $2
+          `,
+        [limit, offset]
+      );
+      const parsed = resultQuery.rows.map(r => ({
+        name: r.name,
+        description: r.description,
+        token_uri: r.token_uri,
+        image_uri: r.image_uri,
+        image_canonical_uri: r.image_canonical_uri,
+        contract_id: r.contract_id,
+      }));
+      return { results: parsed, total: totalQuery.rows[0].count };
     });
   }
 
