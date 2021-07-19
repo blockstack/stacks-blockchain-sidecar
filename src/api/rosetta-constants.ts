@@ -51,7 +51,11 @@ export const RosettaOperationTypes = [
   'mint',
   'burn',
   'miner_reward',
-  'stx_lock',
+  'stx_lock', // stx event
+  'stx_unlock', // forged event
+  'stack_stx', // PoX contract function
+  'delegate_stx', // PoX contract function
+  'revoke_delegate_stx', // PoX contract function
 ];
 
 export const RosettaOperationStatuses = [

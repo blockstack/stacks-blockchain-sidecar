@@ -33,6 +33,7 @@ import {
   DbMicroblock,
   DbGetBlockWithMetadataOpts,
   DbGetBlockWithMetadataResponse,
+  StxUnlockEvent,
 } from './common';
 import { logger, FoundOrNot } from '../helpers';
 import { AddressTokenOfferingLocked, TransactionType } from '@stacks/stacks-blockchain-api-types';
@@ -660,20 +661,17 @@ export class MemoryDataStore
   ): Promise<{ results: DbTx[]; total: number }> {
     throw new Error('Method not implemented');
   }
-  getMinerRewards({
-    blockHeight,
-    rewardRecipient,
-  }: {
-    blockHeight: number;
-    rewardRecipient?: string;
-  }): Promise<DbMinerReward[]> {
+  getMinersRewardsAtHeight({ blockHeight }: { blockHeight: number }): Promise<DbMinerReward[]> {
     return Promise.resolve([]);
   }
-
   getTokenOfferingLocked(
     address: string,
     blockHeight: number
   ): Promise<FoundOrNot<AddressTokenOfferingLocked>> {
+    throw new Error('Method not implemented');
+  }
+
+  getUnlockedAddressesAtBlock(block: DbBlock): Promise<StxUnlockEvent[]> {
     throw new Error('Method not implemented');
   }
 
